@@ -16,14 +16,18 @@ public class UserInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-
+        
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             Object raw = message.getHeaders().get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
-
+           
             if (raw instanceof Map) {
                 Object name = ((Map) raw).get("username");
-
+                
+                
                 if (name instanceof ArrayList) {
+                	
+                	
+                	
                     accessor.setUser(new User(((ArrayList<String>) name).get(0).toString()));
                 }
             }
@@ -31,3 +35,5 @@ public class UserInterceptor implements ChannelInterceptor {
         return message;
     }
 }
+
+

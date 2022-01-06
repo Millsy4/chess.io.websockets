@@ -1,27 +1,41 @@
 package com.example.IndividualMessageChat;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.util.HtmlUtils;
+
+import com.example.IndividualMessageChat.MyMove;
+
 
 @Controller
+@MessageMapping("/hello")
 public class MessageController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+    
+    @MessageMapping("/helloworld")
+	  @SendTo("/topic/greetings")
+	  public String shareMove(messageEveryone message) throws Exception {
+	    System.out.println(message.toString());//test
+	    return message.getSharedUMessage();
+	  }
 
-    @MessageMapping("/hello")
-    public void send(SimpMessageHeaderAccessor sha, @Payload String username) {
+    @MessageMapping("/hellouser")
+    public void send(SimpMessageHeaderAccessor sha, @Payload String username,
+    		@RequestBody userMessage uMessage) {
+    	System.out.println(uMessage.getBodyOfM());
     	
-    	String messageBody = username.substring(username.indexOf("?!~~~!?")+7);
-    	String username0 = username.substring(0,username.indexOf("?!~~~!?"));
-    	
-        String message = "Hello from " + sha.getUser().getName();
-        	System.out.println(username);
-        simpMessagingTemplate.convertAndSendToUser(username0, "/queue/messages", messageBody);
+        	
+        simpMessagingTemplate.convertAndSendToUser(uMessage.getRecipient(), 
+        		"/queue/messages", uMessage );
         
     }
 }
