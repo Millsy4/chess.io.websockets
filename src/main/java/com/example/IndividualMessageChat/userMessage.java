@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class userMessage {
 	@JsonProperty("from")
-    private String userNameU;
+    private String userNameU; 
 	@JsonProperty("to")
 	private String recipient;
     public String getRecipient() {

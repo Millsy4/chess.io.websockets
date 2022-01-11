@@ -29,13 +29,22 @@ public class MessageController {
 	  }
 
     @MessageMapping("/hellouser")
-    public void send(SimpMessageHeaderAccessor sha, @Payload String username,
-    		@RequestBody userMessage uMessage) {
+    public void send(@RequestBody userMessage uMessage) {
     	System.out.println(uMessage.getBodyOfM());
     	
         	
         simpMessagingTemplate.convertAndSendToUser(uMessage.getRecipient(), 
         		"/queue/messages", uMessage );
+        
+    }
+    
+    @MessageMapping("/chattext")
+    public void sendMoves(@RequestBody userMessage uMessage) {
+    	System.out.println(uMessage.getBodyOfM());
+    	
+        	
+        simpMessagingTemplate.convertAndSendToUser(uMessage.getRecipient(), 
+        		"/queue/chat", uMessage );
         
     }
 }
